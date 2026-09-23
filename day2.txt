@@ -1,0 +1,24 @@
+!@Fortinet
+config system global
+set hostname FW-EDGE-12
+end
+config system admin
+edit rivan
+set accprofile super_admin
+set vdom root
+set password pass
+next
+
+config t
+no monitor session 1
+end
+
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQCu+gyFJ+H5RSByp0CVQf3YLl0fMcGvrLujx8tJG7da
+w1Dr+VJ6cUBZli7vg69Wo5Rtik6S/CGUE4rA4YQR2wxBay8zyMlzn2AWSYgvZcX1gpx3yB973fKnLHs6
+9XggoqTYgTOpiQbnuGDSFxzN0U/BKiOEAjZXqJBw938uE2KQpw==
+
+
+TASK: 1 DOMAIN NAME netplus12.com
+APEX Record/Root Record netplus12.com
+Web www.net
+Nameserver ns1 ns2
