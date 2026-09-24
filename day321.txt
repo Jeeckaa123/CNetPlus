@@ -1,0 +1,427 @@
+IPV4 Subnetting:
+TASK 1: Design a network for accenture.com with 1750 agents, team leads, and project managers. Using the 10.0.0.0/8 address space.
+
+C:Convert: 1750 = 11bits
+S:Subtract: /32 - 11 = /21
+Answer: 10.0.0.0/21
+I:Insert: /21 (3rd, 8i)
+- 10.0.8.0
+
+Network ni Accenture.com: 10.0.0.0 /21
+First Valid IP: 10.0.0.2
+Last Valid IP: 10.0.7.254
+Broadcast: 10.0.8.0 - 1 = 10.0.7.255
+
+Not Network: 10.0.8.0 /?
+
+Hosts = 1,750
+
+
+Task 2: Design a network for accenture.com with 600 agents, team leads, and project managers. Using the 10.0.0.0/8 address space.
+
+CONVERT: 600 = 10Bits
+SUBTRACT: /32-10 =/22
+10.0.0.0 /22
+INSERT: 3rd, 4i
+
+Network
+First Valid (+1): 10.0.0.1 /22
+Last Valid (-1): 10.0.3.254
+Broadcast (-1 NOT): Not Network - 1 = 10.0.3.255
+Not Network = 10.0.4.0 /?
+
+NETWORK:
+10.0.0.0 /22 (3rd, 4i)
+SUBNETS 1: 10.0.0.0 /22
+		2: 10.0.4.0 /22
+		3: 10.0.8.0 /22
+		4: 10.0.12..0 /22
+		
+		
+Task 3: Design a network for infosys with 37 pcs. Using the 10.50.128.128/25 address space.
+
+CONVERT: 37 = 6bits
+SUBTRACT: /32 - 6 = /26
+INSERT: /26 = (4th, 64i)
+
+NETWORK:
+First Valid: 10.50.128.128 + 1 = 10.50.128.129 /26
+LAST VALID: 10.50.128.190
+BROADCAST: 10.50.128.191
+
+NOT NETWORK: 10.50.128.192
+SECOND SUBNET: 10.50.128.192 /26
+3RD SUBNET: 10.50.129.0 /26
+4TH: 10.50.129.64 /26
+
+
+
+Task 4: Design a network for TUSKUS.com with 100 pcs. Using the 192.168.192.0/19 address space.
+
+CONVERT: 100 = 7bits
+SUBTRACT: /32 - 7 = /25
+INSERT: (4TH,128i)
+
+NETWORK: 192.168.192.128.0 /25
+FIRST VALID: 192.168.192.1 /25
+LAST VALID: 192.168.192.126
+BROADCAST: 192.168.192.127
+NOT NETWORK: 192.168.192.128
+
+SUBNETS: 192.168.192.0 /25
+192.168.192.128 /25
+192.168.193.0 /25
+192.168.193.128 /25
+192.168.194.0 /25
+192.168.194.128 /25
+
+
+
+Login: root
+Pass: C1sc0123
+
+Get IP:
+rm -rf /etc/udev/rules.d/70-persistent-net.rules
+reboot
+
+Set NetAdapters:
+NetAdapter 1: NAT (208.8.8.0/24)
+NetAdapter 2: VMNet15 (10.255.10.0/24)
+NetAdapter 3: VMNet16 (10.69.255.0/29)
+
+!@cmd
+route add 172.16.29.0 mask 255.255.255.0 10.69.255.6
+
+
+
+!@C1 - DHCP
+
+config t
+vlan 25
+ name taskus.com
+ exit
+Int vlan 25
+ no shut
+ ip add 192.168.192.1 255.255.255.128
+ip dhcp excluded-add 192.168.192.1 192.168.192.10
+ip dhcp pool taskus.com
+ network 192.168.192.0 255.255.255.128
+ default-router 192.168.192.1 
+ domain-name taskus.com
+ dns-server 10.12.1.10
+ option 150 ip 10.12.100.8
+ end
+ 
+ 
+ !@A1 LIPAT VLAN
+ conf t
+ Int e0/0
+  switchport mode access
+  switchport access vlan 25
+  do sh ip dhcp binding
+  
+  
+ !@CONFIG Para kay p1
+ conf t
+ int e0/0
+ no shut
+ ip add dhcp
+ end
+ bp
+ 
+ 
+ 
+ 
+ 192.168.192.128 /25 (4th, 128)
+ NOT: 192.168.193.0 /25
+ FIRST: 192.168.192.129
+ 192.168.192.254
+ 192.168.192.255
+
+
+!@C1
+
+config t
+vlan 26
+ name taskus2.com
+ exit
+Int vlan 26
+ no shut
+ ip add 192.168.192.129 255.255.255.128
+ip dhcp excluded-add 192.168.192.129 192.168.192.179
+ip dhcp pool taskus2.com
+ network 192.168.192.128 255.255.255.128
+ default-router 192.168.192.129
+ domain-name taskus2.com
+ dns-server 10.12.1.10
+ option 150 ip 10.12.100.8
+ end
+ 
+ 
+ !@A2 LIPAT VLAN
+ conf t
+ Int e1/0
+  switchport mode access
+  switchport access vlan 26
+  do sh ip dhcp binding
+  
+  
+ !@CONFIG Para kay p2
+ conf t
+ int e1/0
+ no shut
+ ip add dhcp
+ end
+ bp
+ 
+ 
+ TASK4: Design a network for bdo.com with 777 pcs. Using the 172.16.64.0/20 address space.
+ Configure C1 as DHCP server and S1 as DHCP client for BDO.
+ Reserve: 20 IP Addresses
+
+ CONVERT: 10bits
+ SUBTRACT: /32-10 = /22
+ INSERT:3rd,4i
+ NETWORK:172.16.64.0 /22
+ FIRST VALID (+1 NET): 172.16.64.1 /22
+ LAST VALID (-1 BROAD):172.16.67.254
+ BROADCAST (-1 NOT): 172.16.67.255
+ NOT NETWORK:172.16.68.0 /22
+ 
+	SUBNETS: 172.16.68.0 /22
+	172.16.72.0 /22
+	172.16.76.0 /22
+	172.16.80.0 /22
+	172.16.84.0 /22
+ 
+ 
+ !@C1
+
+config t
+vlan 69
+ name bdo.com
+ exit
+Int vlan 69
+ no shut
+ ip add 172.16.64.1 255.255.252.0
+ip dhcp excluded-add 172.16.64.1 172.16.64.20
+ip dhcp pool bdo.com
+ network 172.16.64.0 255.255.252.0
+ default-router 172.16.64.1
+ domain-name bdo.com
+ dns-server 10.12.1.10
+ option 150 ip 10.12.100.8
+
+ Int e1/0
+  switchport mode access
+  switchport access vlan 69
+  do sh ip dhcp binding
+  
+  
+ !@CONFIG Para kay S1
+ conf t
+ int e1/0
+ no shut
+ ip add dhcp
+ end
+ bp
+ 
+ 
+ **VLSM
+ TASK6: Design a network for BCLO.com with the ff:
+ Admin dept: 123 HOSTS
+ FIN dept: 69 Hosts
+ GUESTS: 1800 HOSTS 
+ IP ADD: 10.40.0.0/16
+ 
+ GUESTS: 1800
+ C: 11bits
+ S:  /32 - 11 = 21
+ I: (3RD,8i)
+ NETWORK:  10.40.0.0 /21
+ NOT: 10.40.8.0 /?
+ 
+ ADMIN: 123
+ C:7bits
+ S: 32-7 = /25
+ I: (4TH, 128i)
+ NETWORK: 10.40.8.0 /25
+ NOT NETWORK: 10.40.8.128
+ 
+FIN: 69
+C:7 bits
+S: 32-7 =/25
+I: (4TH, 128)
+NETWORK: 10.40.8.128 /25
+NOT NETWORK: 10.40.7.255 /25
+
+
+
+====
+CORETAAS
+
+conf t
+ip routing 
+int fa0/9
+no sw
+ip add 10.100.69.125 255.255.255.192
+no shut
+end
+
+COREBABA
+
+conf t
+ip routing 
+int fa0/9
+no sw
+ip add 10.100.69.135 255.255.255.192
+no shut
+end
+
+CORE TAAS
+conf t
+ip routing 
+int fa0/9
+no sw
+ip add 10.100.69.136 255.255.255.192
+no shut
+end
+
+
+
+==
+FINDING THE NETWORK
+1. 10.15.201.72 /27
+2.192.168.115.1 /21
+3. 172.16.1.214 /25
+4.192.168.55.137 /22
+
+1. 10.15.201.72 /27
+STEP 1:(4th 32i)
+10.15.201.
+
+
+3.172.16.1.214 /25
+(4TH,128)
+172.16.1.128
+
+
+4. 192.168.55.137 /22
+(3RD 4I)
+192.168.52.0
+
+40
+44
+48
+52
+56
+
+
+
+====
+OSPF
+STATIC ROUTE
+1. Destination
+2. SubnetMask
+3. Next Hop/Exit Interface (Ingress/Egress)
+
+
+HOST Static Route
+R1
+
+conf t
+ip route 10.1.1.6 255.255.255.255 10.1.1.2
+end
+ping 10.
+
+conf t
+ip route 10.1.1.1 255.255.255.255 10.1.1.5
+end
+ping 10.1.1.1
+
+conf t
+ip route 10.1.1.1 255.255.255.255 10.1.1.5
+end
+ping 10.1.1.1
+
+conf t
+ip route 2.2.2.2 255.255.255.255 10.1.1.2
+end
+ping 2.2.2.2
+
+
+STATIC NETWORK ROUTE 
+R1
+conf t
+ip route 10.1.1.8 255.255.255.252 10.1.1.2
+end
+ping 10.1.1.8
+
+R2
+conf t
+ip route 10.1.1.8 255.255.255.252 10.1.1.6
+end
+ping 10.1.1.8
+
+R4
+conf t
+ip route 10.1.1.0 255.255.255.252 10.1.1.9
+end
+ping 10.1.1.1
+
+
+====
+p1
+conf t
+ int e0/0
+  ip add 10.2.1.101 255.255.255.0
+  no shut
+  end
+  
+  p2
+  conf t
+ int e1/0
+  ip add 10.2.1.102 255.255.255.0
+  no shut
+  end
+  
+  
+  
+  =====
+  1.HOST
+  2. NETWORK
+  3. FLOAT
+  4. DEFAULT
+  
+  PATH SELECTION RULES
+  1. LONGEST PREFIX
+  EXAMPLE: dESTINATION 10.1.1.130
+  S 10.1.1.0 /24
+  ANSWER: S 10.1.1.128 /24
+  10.1.0.0 /16
+  
+  
+  
+  
+  conf t
+ ip route 0.0.0.0 0.0.0.0 192.168.1.130 1
+ ip route 0.0.0.0 0.0.0.0 192.168.1.129 10
+ end
+ 
+ 
+ 
+ R4
+ conf t
+ router eigrp 100
+ network 10.1.4.4 0.0.0.3
+ network 10.1.4.8 0.0.0.3
+ network 10.1.1.8 0.0.0.3
+ end
+ 
+  R3
+ conf t
+ router eigrp 100
+ network 10.1.4.8 0.0.0.3
+ network 3.3.3.3 0.0.0.0
+ end
+ 
